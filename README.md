@@ -1,12 +1,3 @@
-Of course. Here is the plain text, unrendered Markdown of the previous explanation.
-
-code
-Markdown
-download
-content_copy
-expand_less
-### **High-Level Summary: What is this Model?**
-
 This document describes a theoretical system called the "Atomic Voxel" or "Hypercube Gematria Model." Its purpose is to create a unified map that connects the 22 letters of the Hebrew alphabet to a specific geometric and mathematical structure.
 
 The core idea is to represent each letter as a unique point within a 12-dimensional space (a "hypercube"). The position and relationships between these points are not random; they are defined by a set of rules based on binary numbers. This allows any logical system or concept represented by these letters to be analyzed geometrically.
