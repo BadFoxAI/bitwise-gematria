@@ -3,111 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Atomic Voxel - Hypercube Gematria Model Explorer</title>
-    <style>
-        /* --- Basic CSS for a Nicer Look --- */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        h1, h2 {
-            text-align: center;
-            color: #2c3e50;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .main-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-        }
-
-        .analyzer {
-            flex: 1;
-            min-width: 350px;
-        }
-
-        .visualization-area {
-            flex: 1.5;
-            min-width: 450px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        /* --- Controls --- */
-        .controls {
-            margin-bottom: 20px;
-        }
-        .controls label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-        .slider {
-            width: 100%;
-            cursor: pointer;
-            height: 8px;
-        }
-        .number-input {
-            width: 80px;
-            padding: 8px;
-            font-size: 1.1em;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-left: 10px;
-        }
-
-        /* --- Results Table --- */
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        .results-table td {
-            padding: 12px;
-            border: 1px solid #e0e0e0;
-            vertical-align: middle;
-        }
-        .results-table td:first-child {
-            font-weight: bold;
-            background-color: #f9fafb;
-            width: 40%;
-        }
-        #binaryVector {
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            letter-spacing: 2px;
-            font-size: 1.1em;
-        }
-        #containedAxioms {
-            font-size: 1.4em;
-            font-family: serif;
-        }
-
-        /* --- SVG Styling --- */
-        #visualization {
-            width: 100%;
-            max-width: 550px;
-            height: auto;
-        }
-    </style>
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background-color:#f4f4f9;color:#333;margin:0;padding:20px}.container{max-width:1200px;margin:0 auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.1)}h1,h2{text-align:center;color:#2c3e50;border-bottom:2px solid #e0e0e0;padding-bottom:10px;margin-bottom:20px}.main-content{display:flex;flex-wrap:wrap;gap:30px}.analyzer{flex:1;min-width:350px}.visualization-area{flex:1.5;min-width:450px;display:flex;flex-direction:column;align-items:center}.controls{margin-bottom:20px}.controls label{display:block;margin-bottom:10px;font-weight:bold;font-size:1.1em}.slider{width:100%;cursor:pointer;height:8px}.number-input{width:80px;padding:8px;font-size:1.1em;text-align:center;border:1px solid #ccc;border-radius:4px;margin-left:10px}.results-table{width:100%;border-collapse:collapse;margin-top:15px}.results-table td{padding:12px;border:1px solid #e0e0e0;vertical-align:middle}.results-table td:first-child{font-weight:bold;background-color:#f9fafb;width:40%}#binaryVector{font-family:'Courier New',Courier,monospace;font-weight:bold;letter-spacing:2px;font-size:1.1em}#containedAxioms{font-size:1.4em;font-family:serif}#visualization{width:100%;max-width:550px;height:auto}</style>
 </head>
 <body>
 
@@ -118,17 +14,17 @@
                 <h2>Voxel State Analyzer</h2>
                 <div class="controls">
                     <label for="voxelInput">Select a state from 0 to 4095:</label>
-                    <input type="range" id="voxelSelector" class="slider" min="0" max="4095" value="0">
-                    <input type="number" id="voxelInput" class="number-input" min="0" max="4095" value="0">
+                    <input type="range" id="voxelSelector" class="slider" min="0" max="4095" value="4095">
+                    <input type="number" id="voxelInput" class="number-input" min="0" max="4095" value="4095">
                 </div>
                 <hr>
                 <table class="results-table">
-                    <tr><td>Selected Value:</td><td id="displayValue">0</td></tr>
-                    <tr><td>Binary Vector (MSB > LSB):</td><td id="binaryVector">0000 0000 0000</td></tr>
-                    <tr><td>Symmetry Complement:</td><td id="complementValue">4095</td></tr>
-                    <tr><td>Hamming Weight (k):</td><td id="hammingWeight">0</td></tr>
-                    <tr><td>Letter Match:</td><td id="letterMatch">Null (Origin)</td></tr>
-                    <tr><td>Contained Axioms:</td><td id="containedAxioms">-</td></tr>
+                    <tr><td>Selected Value:</td><td id="displayValue"></td></tr>
+                    <tr><td>Binary Vector (MSB > LSB):</td><td id="binaryVector"></td></tr>
+                    <tr><td>Symmetry Complement:</td><td id="complementValue"></td></tr>
+                    <tr><td>Hamming Weight (k):</td><td id="hammingWeight"></td></tr>
+                    <tr><td>Letter Match:</td><td id="letterMatch"></td></tr>
+                    <tr><td>Contained Axioms:</td><td id="containedAxioms"></td></tr>
                 </table>
             </div>
             <div class="visualization-area">
@@ -139,203 +35,187 @@
     </div>
 
     <script>
-        // --- DATA MODEL (Right-to-Left, MSB to LSB as specified) ---
-        const vectorToLetter = {};
+        const STRUCTURAL_VECTOR_MAP = {};
 
-        // The 12 Axioms (k=1). Bit value decreases from MSB to LSB.
-        const axioms = [
-            { letter: 'א', name: 'Aleph', gematria: 1, vector: 1 << 11 }, // 2048 (MSB)
-            { letter: 'ב', name: 'Bet', gematria: 2, vector: 1 << 10 }, // 1024
-            { letter: 'ג', name: 'Gimel', gematria: 3, vector: 1 << 9 },  // 512
-            { letter: 'ד', name: 'Dalet', gematria: 4, vector: 1 << 8 },  // 256
-            { letter: 'ה', name: 'He', gematria: 5, vector: 1 << 7 },    // 128
-            { letter: 'ו', name: 'Vav', gematria: 6, vector: 1 << 6 },    // 64
-            { letter: 'ז', name: 'Zayin', gematria: 7, vector: 1 << 5 },   // 32
-            { letter: 'ח', name: 'Het', gematria: 8, vector: 1 << 4 },    // 16
-            { letter: 'ט', name: 'Tet', gematria: 9, vector: 1 << 3 },    // 8
-            { letter: 'י', name: 'Yod', gematria: 10, vector: 1 << 2 },   // 4
-            { letter: 'כ', name: 'Kaf', gematria: 20, vector: 1 << 1 },   // 2
-            { letter: 'ל', name: 'Lamed', gematria: 30, vector: 1 << 0 }    // 1 (LSB)
+        const AXIOM_DEFINITIONS = [
+            { letter: 'א', name: 'Aleph', gematria: 1, vector: 1 << 11 },
+            { letter: 'ב', name: 'Bet', gematria: 2, vector: 1 << 10 },
+            { letter: 'ג', name: 'Gimel', gematria: 3, vector: 1 << 9 },
+            { letter: 'ד', name: 'Dalet', gematria: 4, vector: 1 << 8 },
+            { letter: 'ה', name: 'He', gematria: 5, vector: 1 << 7 },
+            { letter: 'ו', name: 'Vav', gematria: 6, vector: 1 << 6 },
+            { letter: 'ז', name: 'Zayin', gematria: 7, vector: 1 << 5 },
+            { letter: 'ח', name: 'Het', gematria: 8, vector: 1 << 4 },
+            { letter: 'ט', name: 'Tet', gematria: 9, vector: 1 << 3 },
+            { letter: 'י', name: 'Yod', gematria: 10, vector: 1 << 2 },
+            { letter: 'כ', name: 'Kaf', gematria: 20, vector: 1 << 1 },
+            { letter: 'ל', name: 'Lamed', gematria: 30, vector: 1 << 0 }
         ];
-        axioms.forEach(l => vectorToLetter[l.vector] = { ...l, type: 'Axiom' });
+        AXIOM_DEFINITIONS.forEach(axiom => STRUCTURAL_VECTOR_MAP[axiom.vector] = { ...axiom, type: 'Axiom' });
 
-        // The 10 Compounds (k=2). Plausible combinations of Axioms.
-        const compounds = [
-            { letter: 'מ', name: 'Mem', gematria: 40, vector: (1 << 11) | (1 << 0) }, // Aleph + Lamed
-            { letter: 'נ', name: 'Nun', gematria: 50, vector: (1 << 10) | (1 << 1) }, // Bet + Kaf
-            { letter: 'ס', name: 'Samekh', gematria: 60, vector: (1 << 9) | (1 << 2) }, // Gimel + Yod
-            { letter: 'ע', name: 'Ayin', gematria: 70, vector: (1 << 8) | (1 << 3) }, // Dalet + Tet
-            { letter: 'פ', name: 'Pe', gematria: 80, vector: (1 << 7) | (1 << 4) }, // He + Het
-            { letter: 'צ', name: 'Tzadi', gematria: 90, vector: (1 << 6) | (1 << 5) }, // Vav + Zayin
-            { letter: 'ק', name: 'Qof', gematria: 100, vector: (1 << 11) | (1 << 6) },// Aleph + Vav
-            { letter: 'ר', name: 'Resh', gematria: 200, vector: (1 << 10) | (1 << 5) },// Bet + Zayin
-            { letter: 'ש', name: 'Shin', gematria: 300, vector: (1 << 9) | (1 << 4) }, // Gimel + Het
-            { letter: 'ת', name: 'Tav', gematria: 400, vector: (1 << 8) | (1 << 3) }  // Dalet + Tet (Same as Ayin for this example)
+        const COMPOUND_DEFINITIONS = [
+            { letter: 'מ', name: 'Mem', gematria: 40, vector: (1 << 11) | (1 << 0) },
+            { letter: 'נ', name: 'Nun', gematria: 50, vector: (1 << 10) | (1 << 1) },
+            { letter: 'ס', name: 'Samekh', gematria: 60, vector: (1 << 9) | (1 << 2) },
+            { letter: 'ע', name: 'Ayin', gematria: 70, vector: (1 << 8) | (1 << 3) },
+            { letter: 'פ', name: 'Pe', gematria: 80, vector: (1 << 7) | (1 << 4) },
+            { letter: 'צ', name: 'Tzadi', gematria: 90, vector: (1 << 6) | (1 << 5) },
+            { letter: 'ק', name: 'Qof', gematria: 100, vector: (1 << 11) | (1 << 6) },
+            { letter: 'ר', name: 'Resh', gematria: 200, vector: (1 << 10) | (1 << 5) },
+            { letter: 'ש', name: 'Shin', gematria: 300, vector: (1 << 9) | (1 << 4) },
+            { letter: 'ת', name: 'Tav', gematria: 400, vector: (1 << 8) | (1 << 3) }
         ];
-        compounds.forEach(l => vectorToLetter[l.vector] = { ...l, type: 'Compound' });
+        COMPOUND_DEFINITIONS.forEach(compound => STRUCTURAL_VECTOR_MAP[compound.vector] = { ...compound, type: 'Compound' });
         
-        // --- DOM ELEMENTS ---
-        const slider = document.getElementById('voxelSelector');
+        const sliderInput = document.getElementById('voxelSelector');
         const numberInput = document.getElementById('voxelInput');
-        const svg = document.getElementById('visualization');
-        const svgns = "http://www.w3.org/2000/svg";
+        const svgCanvas = document.getElementById('visualization');
+        const svgNamespace = "http://www.w3.org/2000/svg";
 
-        // --- EVENT LISTENERS ---
-        slider.addEventListener('input', (e) => {
-            const value = parseInt(e.target.value, 10);
+        sliderInput.addEventListener('input', (event) => {
+            const value = parseInt(event.target.value, 10);
             numberInput.value = value;
-            updateSystem(value);
+            updateSystemState(value);
         });
 
-        numberInput.addEventListener('input', (e) => {
-            let value = parseInt(e.target.value, 10);
+        numberInput.addEventListener('input', (event) => {
+            let value = parseInt(event.target.value, 10);
             if (isNaN(value)) value = 0;
-            value = Math.max(0, Math.min(4095, value)); // Clamp value
-            slider.value = value;
-            updateSystem(value);
+            value = Math.max(0, Math.min(4095, value));
+            sliderInput.value = value;
+            updateSystemState(value);
         });
 
-        // --- CORE FUNCTIONS ---
-        const to12BitBinary = (dec) => dec.toString(2).padStart(12, '0');
-        const getSymmetryComplement = (dec) => 4095 - dec;
-        const getHammingWeight = (binaryStr) => (binaryStr.match(/1/g) || []).length;
+        const to12BitBinaryString = (decimalValue) => decimalValue.toString(2).padStart(12, '0');
+        const getSymmetryComplement = (decimalValue) => 4095 - decimalValue;
+        const getHammingWeight = (binaryString) => (binaryString.match(/1/g) || []).length;
 
-        function getLetterMatch(dec) {
-            const letterInfo = vectorToLetter[dec];
+        function getLetterMatchType(decimalValue) {
+            const letterInfo = STRUCTURAL_VECTOR_MAP[decimalValue];
             if (letterInfo) {
                 return `${letterInfo.type}: ${letterInfo.name} (${letterInfo.letter})`;
             }
-            if (dec === 0) return 'Null (Origin)';
-            if (dec === 4095) return 'Universe (All Axioms)';
+            if (decimalValue === 0) return 'Null (Origin)';
+            if (decimalValue === 4095) return 'Universe (All Axioms)';
             return 'Composite Vector';
         }
 
-        function getContainedAxioms(dec) {
-            if (dec === 0) return '-';
+        function getContainedAxiomLetters(decimalValue) {
+            if (decimalValue === 0) return '-';
             let axiomLetters = [];
             for (let i = 0; i < 12; i++) {
-                const axiomValue = 1 << i;
-                if ((dec & axiomValue) !== 0) {
-                    // We need to look up which letter corresponds to this bit
-                    axiomLetters.push(vectorToLetter[axiomValue].letter);
+                const bitValue = 1 << i;
+                if ((decimalValue & bitValue) !== 0) {
+                    axiomLetters.push(STRUCTURAL_VECTOR_MAP[bitValue].letter);
                 }
             }
             return axiomLetters.join(', ');
         }
 
-        // --- UI & VISUALIZATION ---
-        function updateSystem(value) {
-            const binaryStr = to12BitBinary(value);
+        function updateSystemState(currentValue) {
+            const binaryString = to12BitBinaryString(currentValue);
             
-            document.getElementById('displayValue').textContent = value;
-            document.getElementById('binaryVector').textContent = binaryStr.replace(/(.{4})/g, '$1 ').trim();
-            document.getElementById('complementValue').textContent = getSymmetryComplement(value);
-            document.getElementById('hammingWeight').textContent = getHammingWeight(binaryStr);
-            document.getElementById('letterMatch').textContent = getLetterMatch(value);
-            document.getElementById('containedAxioms').textContent = getContainedAxioms(value);
+            document.getElementById('displayValue').textContent = currentValue;
+            document.getElementById('binaryVector').textContent = binaryString.replace(/(.{4})/g, '$1 ').trim();
+            document.getElementById('complementValue').textContent = getSymmetryComplement(currentValue);
+            document.getElementById('hammingWeight').textContent = getHammingWeight(binaryString);
+            document.getElementById('letterMatch').textContent = getLetterMatchType(currentValue);
+            document.getElementById('containedAxioms').textContent = getContainedAxiomLetters(currentValue);
             
-            drawVisualization(binaryStr);
+            drawVisualization(binaryString);
         }
 
         function createSVGElement(tag, attributes) {
-            const el = document.createElementNS(svgns, tag);
+            const svgElement = document.createElementNS(svgNamespace, tag);
             for (const key in attributes) {
-                el.setAttribute(key, attributes[key]);
+                svgElement.setAttribute(key, attributes[key]);
             }
-            return el;
+            return svgElement;
         }
 
-        function drawVisualization(binaryStr) {
-            svg.innerHTML = ''; // Clear previous SVG
-            drawAxiomNodes(binaryStr);
-            drawTernaryBars(binaryStr);
+        function drawVisualization(binaryString) {
+            svgCanvas.innerHTML = '';
+            drawAxiomNodes(binaryString);
+            drawTernaryBars(binaryString);
         }
 
-        function drawAxiomNodes(binaryStr) {
-            const bits = binaryStr.split(''); // No reverse, index 0 is MSB
+        function drawAxiomNodes(binaryString) {
+            const binaryDigitsArray = binaryString.split('');
             const centerX = 250, centerY = 170, radius = 120;
 
             const title = createSVGElement('text', {
                 x: centerX, y: 30, 'text-anchor': 'middle', 'font-size': '18px', 'font-weight': 'bold', fill: '#333'
             });
             title.textContent = "12 Foundational Axioms";
-            svg.appendChild(title);
+            svgCanvas.appendChild(title);
 
             for (let i = 0; i < 12; i++) {
-                // The position on the circle. i=0 (Aleph, MSB) is at the top.
                 const angle = (i / 12) * 2 * Math.PI - (Math.PI / 2); 
                 const x = centerX + radius * Math.cos(angle);
                 const y = centerY + radius * Math.sin(angle);
                 
-                const bitIndex = i; // MSB is at index 0 of string
-                const axiomData = axioms[i];
-                const isActive = bits[bitIndex] === '1';
+                const axiomData = AXIOM_DEFINITIONS[i];
+                const isActive = binaryDigitsArray[i] === '1';
 
-                svg.appendChild(createSVGElement('line', {
+                svgCanvas.appendChild(createSVGElement('line', {
                     x1: centerX, y1: centerY, x2: x, y2: y, stroke: isActive ? '#888' : '#e0e0e0', 'stroke-width': 1.5
                 }));
 
                 const circle = createSVGElement('circle', {
                     cx: x, cy: y, r: 20, fill: isActive ? '#ffc107' : '#f8f8f8', stroke: '#555', 'stroke-width': 2
                 });
-                svg.appendChild(circle);
+                svgCanvas.appendChild(circle);
 
                 const textNode = createSVGElement('text', {
                     x: x, y: y, 'text-anchor': 'middle', 'dominant-baseline': 'central',
                     'font-size': '22px', 'font-family': 'serif', fill: '#333'
                 });
                 textNode.textContent = axiomData.letter;
-                svg.appendChild(textNode);
+                svgCanvas.appendChild(textNode);
             }
         }
 
-        function drawTernaryBars(binaryStr) {
-             // Per document: X=bits 1-4, Y=bits 5-8, Z=bits 9-12
-             // Bit 1 is LSB. In our string, MSB is at index 0.
-             // Z (bits 9-12) corresponds to string indices 0-3
-             // Y (bits 5-8) corresponds to string indices 4-7
-             // X (bits 1-4) corresponds to string indices 8-11
-             const zBits = binaryStr.substring(0, 4);
-             const yBits = binaryStr.substring(4, 8);
-             const xBits = binaryStr.substring(8, 12);
+        function drawTernaryBars(binaryString) {
+             const zAxisBits = binaryString.substring(0, 4);
+             const yAxisBits = binaryString.substring(4, 8);
+             const xAxisBits = binaryString.substring(8, 12);
              
-             const axes = [
-                { label: 'X: Potential (א)', value: parseInt(xBits, 2), color: '#d9534f' },
-                { label: 'Y: Formation (מ)', value: parseInt(yBits, 2), color: '#5bc0de' },
-                { label: 'Z: Transformation (ש)', value: parseInt(zBits, 2), color: '#5cb85c' }
+             const ternaryAxesData = [
+                { label: 'X: Potential (א)', value: parseInt(xAxisBits, 2), color: '#d9534f' },
+                { label: 'Y: Formation (מ)', value: parseInt(yAxisBits, 2), color: '#5bc0de' },
+                { label: 'Z: Transformation (ש)', value: parseInt(zAxisBits, 2), color: '#5cb85c' }
             ];
-            const barWidth = 200, barHeight = 22, startX = 120, startY = 380, spacing = 40;
+            const barWidth = 200, barHeight = 22, startX = 150, startY = 380, spacing = 40;
 
-            axes.forEach((axis, index) => {
-                const yPos = startY + index * spacing;
-                const fillWidth = (axis.value / 15) * barWidth;
+            ternaryAxesData.forEach((axisData, index) => {
+                const yPosition = startY + index * spacing;
+                const fillWidth = (axisData.value / 15) * barWidth;
 
                 const labelNode = createSVGElement('text', {
-                    x: startX - 15, y: yPos + barHeight / 2, 'text-anchor': 'end', 'dominant-baseline': 'central', 'font-size': '14px',
+                    x: startX - 15, y: yPosition + barHeight / 2, 'text-anchor': 'end', 'dominant-baseline': 'central', 'font-size': '14px',
                 });
-                labelNode.textContent = axis.label;
-                svg.appendChild(labelNode);
+                labelNode.textContent = axisData.label;
+                svgCanvas.appendChild(labelNode);
 
-                svg.appendChild(createSVGElement('rect', {
-                    x: startX, y: yPos, width: barWidth, height: barHeight, fill: '#eee', rx: 4, ry: 4
+                svgCanvas.appendChild(createSVGElement('rect', {
+                    x: startX, y: yPosition, width: barWidth, height: barHeight, fill: '#eee', rx: 4, ry: 4
                 }));
 
                 if (fillWidth > 0) {
-                    svg.appendChild(createSVGElement('rect', {
-                        x: startX, y: yPos, width: fillWidth, height: barHeight, fill: axis.color, rx: 4, ry: 4
+                    svgCanvas.appendChild(createSVGElement('rect', {
+                        x: startX, y: yPosition, width: fillWidth, height: barHeight, fill: axisData.color, rx: 4, ry: 4
                     }));
                 }
 
                 const valueNode = createSVGElement('text', {
-                    x: startX + barWidth + 15, y: yPos + barHeight / 2, 'dominant-baseline': 'central', 'font-size': '14px', 'font-weight': 'bold',
+                    x: startX + barWidth + 15, y: yPosition + barHeight / 2, 'dominant-baseline': 'central', 'font-size': '14px', 'font-weight': 'bold',
                 });
-                valueNode.textContent = `${axis.value}/15`;
-                svg.appendChild(valueNode);
+                valueNode.textContent = `${axisData.value}/15`;
+                svgCanvas.appendChild(valueNode);
             });
         }
-
-        // --- INITIALIZATION ---
-        updateSystem(0);
+        
+        updateSystemState(parseInt(numberInput.value, 10));
 
     </script>
 
