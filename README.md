@@ -2,7 +2,8 @@ This document describes a theoretical system called the "Atomic Voxel" or "Hyper
 
 The core idea is to represent each letter as a unique point within a 12-dimensional space (a "hypercube"). The position and relationships between these points are not random; they are defined by a set of rules based on binary numbers. This allows any logical system or concept represented by these letters to be analyzed geometrically.
 
-(This is an non-authoritative exploratory and living document, many different options and base settings can be applied, all mearly symbolic abstractions of the pure math at its base. In short please excuse any discrepincies in aligning the symbols correctly to their meanings and operations. All genuine feedback and interest is most welcome and encouraged. )
+* - This is an non-authoritative exploratory and living document, many different options and base settings can be applied, all mearly symbolic abstractions of the pure math at its base. In short please excuse any discrepincies in aligning the symbols correctly to their meanings and operations. All genuine feedback and interest is most welcome and encouraged.
+
 ---
 
 ### **Section 1: The Core Principles (Axioms)**
