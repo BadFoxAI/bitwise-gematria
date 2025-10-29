@@ -3,73 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <title>Atomic Voxel - Hypercube Gematria Model Explorer</title>
-</head>
-<body bgcolor="#f0f0f0">
+    <style>
+        /* --- Basic CSS for a Nicer Look --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
 
-    <table width="100%" cellpadding="10" border="0">
-        <tr>
-            <td colspan="2" align="center">
-                <h1>Atomic Voxel - Hypercube Gematria Model</h1>
-            </td>
-        </tr>
-        <tr valign="top">
-            <td width="40%">
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .analyzer {
+            flex: 1;
+            min-width: 350px;
+        }
+
+        .visualization-area {
+            flex: 1.5;
+            min-width: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* --- Controls --- */
+        .controls {
+            margin-bottom: 20px;
+        }
+        .controls label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .slider {
+            width: 100%;
+            cursor: pointer;
+            height: 8px;
+        }
+        .number-input {
+            width: 80px;
+            padding: 8px;
+            font-size: 1.1em;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        /* --- Results Table --- */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .results-table td {
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+        .results-table td:first-child {
+            font-weight: bold;
+            background-color: #f9fafb;
+            width: 40%;
+        }
+        #binaryVector {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-size: 1.1em;
+        }
+        #containedAxioms {
+            font-size: 1.4em;
+            font-family: serif;
+        }
+
+        /* --- SVG Styling --- */
+        #visualization {
+            width: 100%;
+            max-width: 550px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Atomic Voxel - Hypercube Gematria Model</h1>
+        <div class="main-content">
+            <div class="analyzer">
                 <h2>Voxel State Analyzer</h2>
-                <p>Select a state from 0 to 4095:</p>
-                <input type="range" id="voxelSelector" min="0" max="4095" value="0" style="width: 90%;">
-                <input type="number" id="voxelInput" min="0" max="4095" value="0" style="width: 80px;">
+                <div class="controls">
+                    <label for="voxelInput">Select a state from 0 to 4095:</label>
+                    <input type="range" id="voxelSelector" class="slider" min="0" max="4095" value="0">
+                    <input type="number" id="voxelInput" class="number-input" min="0" max="4095" value="0">
+                </div>
                 <hr>
-                <table cellpadding="5" border="1" bgcolor="#ffffff">
-                    <tr><td><b>Selected Value:</b></td><td id="displayValue">0</td></tr>
-                    <tr><td><b>Binary Vector:</b></td><td id="binaryVector" style="font-family: monospace;">000000000000</td></tr>
-                    <tr><td><b>Symmetry Complement:</b></td><td id="complementValue">4095</td></tr>
-                    <tr><td><b>Hamming Weight (k):</b></td><td id="hammingWeight">0</td></tr>
-                    <tr><td><b>Letter Match:</b></td><td id="letterMatch">Null (0)</td></tr>
-                    <tr><td><b>Contained Axioms:</b></td><td id="containedAxioms">-</td></tr>
+                <table class="results-table">
+                    <tr><td>Selected Value:</td><td id="displayValue">0</td></tr>
+                    <tr><td>Binary Vector (MSB > LSB):</td><td id="binaryVector">0000 0000 0000</td></tr>
+                    <tr><td>Symmetry Complement:</td><td id="complementValue">4095</td></tr>
+                    <tr><td>Hamming Weight (k):</td><td id="hammingWeight">0</td></tr>
+                    <tr><td>Letter Match:</td><td id="letterMatch">Null (Origin)</td></tr>
+                    <tr><td>Contained Axioms:</td><td id="containedAxioms">-</td></tr>
                 </table>
-            </td>
-            <td width="60%" align="center">
-                <h2>Visualization</h2>
-                <svg id="visualization" width="95%" height="400" viewbox="0 0 600 400"></svg>
-            </td>
-        </tr>
-    </table>
+            </div>
+            <div class="visualization-area">
+                <h2>System Visualization</h2>
+                <svg id="visualization" viewbox="0 0 500 520"></svg>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- DATA MODEL ---
-        // Based on the document, we define the 22 letters and their structural vectors.
-        // The first 12 are "Axioms" (Hamming Weight k=1)
-        // The next 10 are "Compounds" (Hamming Weight k=2)
-        const hebrewLetters = {
-            // Axioms (k=1)
-            1: { name: 'Aleph', letter: 'א' },
-            2: { name: 'Bet', letter: 'ב' },
-            4: { name: 'Gimel', letter: 'ג' },
-            8: { name: 'Dalet', letter: 'ד' },
-            16: { name: 'He', letter: 'ה' },
-            32: { name: 'Vav', letter: 'ו' },
-            64: { name: 'Zayin', letter: 'ז' },
-            128: { name: 'Het', letter: 'ח' },
-            256: { name: 'Tet', letter: 'ט' },
-            512: { name: 'Yod', letter: 'י' },
-            1024: { name: 'Kaf', letter: 'כ' },
-            2048: { name: 'Lamed', letter: 'ל' },
-            // Compounds (k=2)
-            3: { name: 'Compound 1 (A+B)', letter: 'ג' }, // Example, actual letters might differ
-            5: { name: 'Compound 2 (A+G)', letter: 'ד' },
-            6: { name: 'Compound 3 (B+G)', letter: 'ה' },
-            9: { name: 'Compound 4 (A+D)', letter: 'ו' },
-            10: { name: 'Compound 5 (B+D)', letter: 'ז' },
-            12: { name: 'Compound 6 (C+D)', letter: 'ח' },
-            17: { name: 'Compound 7 (A+H)', letter: 'ט' },
-            18: { name: 'Compound 8 (B+H)', letter: 'י' },
-            20: { name: 'Compound 9 (C+H)', letter: 'כ' },
-            24: { name: 'Compound 10(D+H)', letter: 'ל' }
-            // Note: The document gives examples, so compound letters are illustrative.
-            // A full implementation would require the specific 10 vectors for the remaining letters.
-            // For this visualization, we'll map all k=1 and k=2 values found.
-        };
+        // --- DATA MODEL (Right-to-Left, MSB to LSB as specified) ---
+        const vectorToLetter = {};
 
+        // The 12 Axioms (k=1). Bit value decreases from MSB to LSB.
+        const axioms = [
+            { letter: 'א', name: 'Aleph', gematria: 1, vector: 1 << 11 }, // 2048 (MSB)
+            { letter: 'ב', name: 'Bet', gematria: 2, vector: 1 << 10 }, // 1024
+            { letter: 'ג', name: 'Gimel', gematria: 3, vector: 1 << 9 },  // 512
+            { letter: 'ד', name: 'Dalet', gematria: 4, vector: 1 << 8 },  // 256
+            { letter: 'ה', name: 'He', gematria: 5, vector: 1 << 7 },    // 128
+            { letter: 'ו', name: 'Vav', gematria: 6, vector: 1 << 6 },    // 64
+            { letter: 'ז', name: 'Zayin', gematria: 7, vector: 1 << 5 },   // 32
+            { letter: 'ח', name: 'Het', gematria: 8, vector: 1 << 4 },    // 16
+            { letter: 'ט', name: 'Tet', gematria: 9, vector: 1 << 3 },    // 8
+            { letter: 'י', name: 'Yod', gematria: 10, vector: 1 << 2 },   // 4
+            { letter: 'כ', name: 'Kaf', gematria: 20, vector: 1 << 1 },   // 2
+            { letter: 'ל', name: 'Lamed', gematria: 30, vector: 1 << 0 }    // 1 (LSB)
+        ];
+        axioms.forEach(l => vectorToLetter[l.vector] = { ...l, type: 'Axiom' });
+
+        // The 10 Compounds (k=2). Plausible combinations of Axioms.
+        const compounds = [
+            { letter: 'מ', name: 'Mem', gematria: 40, vector: (1 << 11) | (1 << 0) }, // Aleph + Lamed
+            { letter: 'נ', name: 'Nun', gematria: 50, vector: (1 << 10) | (1 << 1) }, // Bet + Kaf
+            { letter: 'ס', name: 'Samekh', gematria: 60, vector: (1 << 9) | (1 << 2) }, // Gimel + Yod
+            { letter: 'ע', name: 'Ayin', gematria: 70, vector: (1 << 8) | (1 << 3) }, // Dalet + Tet
+            { letter: 'פ', name: 'Pe', gematria: 80, vector: (1 << 7) | (1 << 4) }, // He + Het
+            { letter: 'צ', name: 'Tzadi', gematria: 90, vector: (1 << 6) | (1 << 5) }, // Vav + Zayin
+            { letter: 'ק', name: 'Qof', gematria: 100, vector: (1 << 11) | (1 << 6) },// Aleph + Vav
+            { letter: 'ר', name: 'Resh', gematria: 200, vector: (1 << 10) | (1 << 5) },// Bet + Zayin
+            { letter: 'ש', name: 'Shin', gematria: 300, vector: (1 << 9) | (1 << 4) }, // Gimel + Het
+            { letter: 'ת', name: 'Tav', gematria: 400, vector: (1 << 8) | (1 << 3) }  // Dalet + Tet (Same as Ayin for this example)
+        ];
+        compounds.forEach(l => vectorToLetter[l.vector] = { ...l, type: 'Compound' });
+        
         // --- DOM ELEMENTS ---
         const slider = document.getElementById('voxelSelector');
         const numberInput = document.getElementById('voxelInput');
@@ -80,258 +184,160 @@
         slider.addEventListener('input', (e) => {
             const value = parseInt(e.target.value, 10);
             numberInput.value = value;
-            updateVisualization(value);
+            updateSystem(value);
         });
 
         numberInput.addEventListener('input', (e) => {
             let value = parseInt(e.target.value, 10);
-            if (isNaN(value) || value < 0) value = 0;
-            if (value > 4095) value = 4095;
+            if (isNaN(value)) value = 0;
+            value = Math.max(0, Math.min(4095, value)); // Clamp value
             slider.value = value;
-            updateVisualization(value);
+            updateSystem(value);
         });
 
-        // --- CORE FUNCTIONS (Based on the document) ---
+        // --- CORE FUNCTIONS ---
+        const to12BitBinary = (dec) => dec.toString(2).padStart(12, '0');
+        const getSymmetryComplement = (dec) => 4095 - dec;
+        const getHammingWeight = (binaryStr) => (binaryStr.match(/1/g) || []).length;
 
-        /**
-         * Converts a decimal number to a 12-bit binary string.
-         * @param {number} dec - The decimal number (0-4095).
-         * @returns {string} The 12-bit binary representation.
-         */
-        function to12BitBinary(dec) {
-            return dec.toString(2).padStart(12, '0');
-        }
-
-        /**
-         * Calculates the bitwise complement. V + ~V = 4095.
-         * @param {number} dec - The decimal number.
-         * @returns {number} The complement.
-         */
-        function getSymmetryComplement(dec) {
-            // The formula V XOR 4095 is equivalent to 4095 - V for this range.
-            return 4095 - dec;
-        }
-
-        /**
-         * Calculates the Hamming Weight (number of '1's in the binary string).
-         * @param {string} binaryStr - The binary string.
-         * @returns {number} The Hamming weight.
-         */
-        function getHammingWeight(binaryStr) {
-            return (binaryStr.match(/1/g) || []).length;
-        }
-        
-        /**
-         * Finds a matching Hebrew letter for a given decimal value.
-         * @param {number} dec - The decimal number.
-         * @param {number} hammingWeight - The hamming weight of the number.
-         * @returns {string} The name and letter if matched.
-         */
-        function getLetterMatch(dec, hammingWeight) {
-            if (hebrewLetters[dec]) {
-                const letterInfo = hebrewLetters[dec];
-                return `${letterInfo.name} (${letterInfo.letter}) [k=${hammingWeight}]`;
+        function getLetterMatch(dec) {
+            const letterInfo = vectorToLetter[dec];
+            if (letterInfo) {
+                return `${letterInfo.type}: ${letterInfo.name} (${letterInfo.letter})`;
             }
-            if (dec === 0) return 'Null (0)';
-            if (dec === 4095) return 'Universe (4095)';
-            return 'No direct match';
+            if (dec === 0) return 'Null (Origin)';
+            if (dec === 4095) return 'Universe (All Axioms)';
+            return 'Composite Vector';
         }
 
-        /**
-         * Identifies the axiom letters contained within the current vector.
-         * @param {number} dec - The decimal number.
-         * @returns {string} A string of the contained axiom letters.
-         */
         function getContainedAxioms(dec) {
             if (dec === 0) return '-';
-            let axioms = [];
+            let axiomLetters = [];
             for (let i = 0; i < 12; i++) {
-                const axiomValue = 1 << i; // 2^i
+                const axiomValue = 1 << i;
                 if ((dec & axiomValue) !== 0) {
-                    axioms.push(hebrewLetters[axiomValue].letter);
+                    // We need to look up which letter corresponds to this bit
+                    axiomLetters.push(vectorToLetter[axiomValue].letter);
                 }
             }
-            return axioms.join(', ');
+            return axiomLetters.join(', ');
         }
 
-
-        // --- VISUALIZATION FUNCTIONS ---
-        
-        /**
-         * Main function to update all UI elements and the SVG visualization.
-         * @param {number} value - The current selected value (0-4095).
-         */
-        function updateVisualization(value) {
-            // --- Calculations ---
+        // --- UI & VISUALIZATION ---
+        function updateSystem(value) {
             const binaryStr = to12BitBinary(value);
-            const complement = getSymmetryComplement(value);
-            const hamming = getHammingWeight(binaryStr);
-            const letter = getLetterMatch(value, hamming);
-            const axioms = getContainedAxioms(value);
-
-            // --- Update Text Display ---
-            document.getElementById('displayValue').textContent = value;
-            document.getElementById('binaryVector').textContent = binaryStr;
-            document.getElementById('complementValue').textContent = complement;
-            document.getElementById('hammingWeight').textContent = hamming;
-            document.getElementById('letterMatch').textContent = letter;
-            document.getElementById('containedAxioms').textContent = axioms;
             
-            // --- Update SVG Display ---
+            document.getElementById('displayValue').textContent = value;
+            document.getElementById('binaryVector').textContent = binaryStr.replace(/(.{4})/g, '$1 ').trim();
+            document.getElementById('complementValue').textContent = getSymmetryComplement(value);
+            document.getElementById('hammingWeight').textContent = getHammingWeight(binaryStr);
+            document.getElementById('letterMatch').textContent = getLetterMatch(value);
+            document.getElementById('containedAxioms').textContent = getContainedAxioms(value);
+            
             drawVisualization(binaryStr);
         }
-        
-        /**
-         * Clears and redraws the entire SVG based on the binary string.
-         * @param {string} binaryStr - The 12-bit binary representation.
-         */
-        function drawVisualization(binaryStr) {
-            // Clear previous SVG contents
-            while (svg.firstChild) {
-                svg.removeChild(svg.firstChild);
+
+        function createSVGElement(tag, attributes) {
+            const el = document.createElementNS(svgns, tag);
+            for (const key in attributes) {
+                el.setAttribute(key, attributes[key]);
             }
-            
-            drawTernaryBars(binaryStr);
-            drawAxiomNodes(binaryStr);
+            return el;
         }
-        
-        /**
-         * Draws the 12 Axiom nodes and highlights the active ones.
-         * @param {string} binaryStr - The 12-bit binary representation.
-         */
+
+        function drawVisualization(binaryStr) {
+            svg.innerHTML = ''; // Clear previous SVG
+            drawAxiomNodes(binaryStr);
+            drawTernaryBars(binaryStr);
+        }
+
         function drawAxiomNodes(binaryStr) {
-             const bits = binaryStr.split('').reverse(); // Reverse to have bit 1 (LSB) at index 0
-             const centerX = 300;
-             const centerY = 150;
-             const radius = 120;
+            const bits = binaryStr.split(''); // No reverse, index 0 is MSB
+            const centerX = 250, centerY = 170, radius = 120;
 
-             // Draw title
-             const title = document.createElementNS(svgns, 'text');
-             title.setAttribute('x', centerX);
-             title.setAttribute('y', 20);
-             title.setAttribute('text-anchor', 'middle');
-             title.setAttribute('font-family', 'sans-serif');
-             title.setAttribute('font-size', '16');
-             title.setAttribute('fill', 'black');
-             title.textContent = "12 Foundational Axioms";
-             svg.appendChild(title);
+            const title = createSVGElement('text', {
+                x: centerX, y: 30, 'text-anchor': 'middle', 'font-size': '18px', 'font-weight': 'bold', fill: '#333'
+            });
+            title.textContent = "12 Foundational Axioms";
+            svg.appendChild(title);
 
-             for (let i = 0; i < 12; i++) {
-                const angle = (i / 12) * 2 * Math.PI - (Math.PI / 2);
+            for (let i = 0; i < 12; i++) {
+                // The position on the circle. i=0 (Aleph, MSB) is at the top.
+                const angle = (i / 12) * 2 * Math.PI - (Math.PI / 2); 
                 const x = centerX + radius * Math.cos(angle);
                 const y = centerY + radius * Math.sin(angle);
                 
-                const isActive = bits[i] === '1';
+                const bitIndex = i; // MSB is at index 0 of string
+                const axiomData = axioms[i];
+                const isActive = bits[bitIndex] === '1';
 
-                // Draw connecting line
-                const line = document.createElementNS(svgns, 'line');
-                line.setAttribute('x1', centerX);
-                line.setAttribute('y1', centerY);
-                line.setAttribute('x2', x);
-                line.setAttribute('y2', y);
-                line.setAttribute('stroke', isActive ? '#333' : '#ccc');
-                svg.appendChild(line);
+                svg.appendChild(createSVGElement('line', {
+                    x1: centerX, y1: centerY, x2: x, y2: y, stroke: isActive ? '#888' : '#e0e0e0', 'stroke-width': 1.5
+                }));
 
-                // Draw the node (circle)
-                const circle = document.createElementNS(svgns, 'circle');
-                circle.setAttribute('cx', x);
-                circle.setAttribute('cy', y);
-                circle.setAttribute('r', 18);
-                circle.setAttribute('fill', isActive ? 'gold' : '#f0f0f0');
-                circle.setAttribute('stroke', '#333');
-                circle.setAttribute('stroke-width', '2');
+                const circle = createSVGElement('circle', {
+                    cx: x, cy: y, r: 20, fill: isActive ? '#ffc107' : '#f8f8f8', stroke: '#555', 'stroke-width': 2
+                });
                 svg.appendChild(circle);
 
-                // Draw the letter inside the circle
-                const text = document.createElementNS(svgns, 'text');
-                text.setAttribute('x', x);
-                text.setAttribute('y', y + 7); // slight offset for vertical centering
-                text.setAttribute('text-anchor', 'middle');
-                text.setAttribute('font-family', 'serif');
-                text.setAttribute('font-size', '20');
-                text.setAttribute('fill', '#333');
-                text.textContent = hebrewLetters[1 << i].letter;
-                svg.appendChild(text);
-             }
+                const textNode = createSVGElement('text', {
+                    x: x, y: y, 'text-anchor': 'middle', 'dominant-baseline': 'central',
+                    'font-size': '22px', 'font-family': 'serif', fill: '#333'
+                });
+                textNode.textContent = axiomData.letter;
+                svg.appendChild(textNode);
+            }
         }
-        
-        /**
-         * Draws the three Ternary Folding bars (Potential, Formation, Transformation).
-         * @param {string} binaryStr - The 12-bit binary representation.
-         */
-        function drawTernaryBars(binaryStr) {
-            const barWidth = 150;
-            const barHeight = 20;
-            const startX = 75;
-            const startY = 320;
-            const spacing = 40;
 
-            // X-Axis (Potential: Bits 1-4)
-            const xBits = binaryStr.substring(8, 12);
-            const xValue = parseInt(xBits, 2); // Max 15
-            
-            // Y-Axis (Formation: Bits 5-8)
-            const yBits = binaryStr.substring(4, 8);
-            const yValue = parseInt(yBits, 2);
-            
-            // Z-Axis (Transformation: Bits 9-12)
-            const zBits = binaryStr.substring(0, 4);
-            const zValue = parseInt(zBits, 2);
-            
-            const axes = [
-                { label: 'X: Potential (א)', value: xValue, color: '#ff6347' },
-                { label: 'Y: Formation (מ)', value: yValue, color: '#4682b4' },
-                { label: 'Z: Transformation (ש)', value: zValue, color: '#32cd32' }
+        function drawTernaryBars(binaryStr) {
+             // Per document: X=bits 1-4, Y=bits 5-8, Z=bits 9-12
+             // Bit 1 is LSB. In our string, MSB is at index 0.
+             // Z (bits 9-12) corresponds to string indices 0-3
+             // Y (bits 5-8) corresponds to string indices 4-7
+             // X (bits 1-4) corresponds to string indices 8-11
+             const zBits = binaryStr.substring(0, 4);
+             const yBits = binaryStr.substring(4, 8);
+             const xBits = binaryStr.substring(8, 12);
+             
+             const axes = [
+                { label: 'X: Potential (א)', value: parseInt(xBits, 2), color: '#d9534f' },
+                { label: 'Y: Formation (מ)', value: parseInt(yBits, 2), color: '#5bc0de' },
+                { label: 'Z: Transformation (ש)', value: parseInt(zBits, 2), color: '#5cb85c' }
             ];
+            const barWidth = 200, barHeight = 22, startX = 120, startY = 380, spacing = 40;
 
             axes.forEach((axis, index) => {
                 const yPos = startY + index * spacing;
-                
-                // Background of the bar
-                const bgRect = document.createElementNS(svgns, 'rect');
-                bgRect.setAttribute('x', startX + 150);
-                bgRect.setAttribute('y', yPos);
-                bgRect.setAttribute('width', barWidth);
-                bgRect.setAttribute('height', barHeight);
-                bgRect.setAttribute('fill', '#ddd');
-                bgRect.setAttribute('stroke', '#aaa');
-                svg.appendChild(bgRect);
-                
-                // Filled portion of the bar
                 const fillWidth = (axis.value / 15) * barWidth;
-                const fillRect = document.createElementNS(svgns, 'rect');
-                fillRect.setAttribute('x', startX + 150);
-                fillRect.setAttribute('y', yPos);
-                fillRect.setAttribute('width', fillWidth);
-                fillRect.setAttribute('height', barHeight);
-                fillRect.setAttribute('fill', axis.color);
-                svg.appendChild(fillRect);
-                
-                // Label
-                const labelText = document.createElementNS(svgns, 'text');
-                labelText.setAttribute('x', startX + 140);
-                labelText.setAttribute('y', yPos + barHeight / 2 + 5);
-                labelText.setAttribute('text-anchor', 'end');
-                labelText.setAttribute('font-family', 'sans-serif');
-                labelText.setAttribute('font-size', '14');
-                labelText.textContent = axis.label;
-                svg.appendChild(labelText);
-                
-                // Value text
-                const valueText = document.createElementNS(svgns, 'text');
-                valueText.setAttribute('x', startX + 150 + barWidth + 10);
-                valueText.setAttribute('y', yPos + barHeight / 2 + 5);
-                valueText.setAttribute('font-family', 'sans-serif');
-                valueText.setAttribute('font-size', '14');
-                valueText.textContent = `${axis.value}/15`;
-                svg.appendChild(valueText);
+
+                const labelNode = createSVGElement('text', {
+                    x: startX - 15, y: yPos + barHeight / 2, 'text-anchor': 'end', 'dominant-baseline': 'central', 'font-size': '14px',
+                });
+                labelNode.textContent = axis.label;
+                svg.appendChild(labelNode);
+
+                svg.appendChild(createSVGElement('rect', {
+                    x: startX, y: yPos, width: barWidth, height: barHeight, fill: '#eee', rx: 4, ry: 4
+                }));
+
+                if (fillWidth > 0) {
+                    svg.appendChild(createSVGElement('rect', {
+                        x: startX, y: yPos, width: fillWidth, height: barHeight, fill: axis.color, rx: 4, ry: 4
+                    }));
+                }
+
+                const valueNode = createSVGElement('text', {
+                    x: startX + barWidth + 15, y: yPos + barHeight / 2, 'dominant-baseline': 'central', 'font-size': '14px', 'font-weight': 'bold',
+                });
+                valueNode.textContent = `${axis.value}/15`;
+                svg.appendChild(valueNode);
             });
         }
 
         // --- INITIALIZATION ---
-        // Trigger the update for the initial value of 0 when the page loads.
-        updateVisualization(0);
+        updateSystem(0);
 
     </script>
+
 </body>
-</html>```
+</html>
