@@ -36,69 +36,50 @@
 
     <script>
         const VECTOR_MAP = {};
-        const GEMATRIA_MAP = {};
+        const AXIOM_DEFINITIONS = [];
 
-        // Define all 22 letters with their Gematria.
-        const letterDefinitions = [
-            { letter: 'א', name: 'Aleph', gematria: 1 }, { letter: 'ב', name: 'Bet', gematria: 2 },
-            { letter: 'ג', name: 'Gimel', gematria: 3 }, { letter: 'ד', name: 'Dalet', gematria: 4 },
-            { letter: 'ה', name: 'Heh', gematria: 5 }, { letter: 'ו', name: 'Vav', gematria: 6 },
-            { letter: 'ז', name: 'Zayin', gematria: 7 }, { letter: 'ח', name: 'Het', gematria: 8 },
-            { letter: 'ט', name: 'Tet', gematria: 9 }, { letter: 'י', name: 'Yod', gematria: 10 },
-            { letter: 'כ', name: 'Kaf', gematria: 20 }, { letter: 'ל', name: 'Lamed', gematria: 30 },
-            { letter: 'מ', name: 'Mem', gematria: 40 }, { letter: 'נ', name: 'Nun', gematria: 50 },
-            { letter: 'ס', name: 'Samekh', gematria: 60 }, { letter: 'ע', name: 'Ayin', gematria: 70 },
-            { letter: 'פ', name: 'Pe', gematria: 80 }, { letter: 'צ', name: 'Tzadi', gematria: 90 },
-            { letter: 'ק', name: 'Qof', gematria: 100 }, { letter: 'ר', name: 'Resh', gematria: 200 },
-            { letter: 'ש', name: 'Shin', gematria: 300 }, { letter: 'ת', name: 'Tav', gematria: 400 }
+        // This is the single source of truth for all 22 letters.
+        // Vectors are assigned systematically.
+        const LETTER_DEFINITIONS = [
+            // --- 12 Axioms (Simple Letters), k=1 ---
+            { letter: 'א', name: 'Aleph', gematria: 1, type: 'Axiom', vector: 1 << 0 },
+            { letter: 'ב', name: 'Bet', gematria: 2, type: 'Axiom', vector: 1 << 1 },
+            { letter: 'ג', name: 'Gimel', gematria: 3, type: 'Axiom', vector: 1 << 2 },
+            { letter: 'ד', name: 'Dalet', gematria: 4, type: 'Axiom', vector: 1 << 3 },
+            { letter: 'ה', name: 'Heh', gematria: 5, type: 'Axiom', vector: 1 << 4 },
+            { letter: 'ו', name: 'Vav', gematria: 6, type: 'Axiom', vector: 1 << 5 },
+            { letter: 'ז', name: 'Zayin', gematria: 7, type: 'Axiom', vector: 1 << 6 },
+            { letter: 'ח', name: 'Het', gematria: 8, type: 'Axiom', vector: 1 << 7 },
+            { letter: 'ט', name: 'Tet', gematria: 9, type: 'Axiom', vector: 1 << 8 },
+            { letter: 'י', name: 'Yod', gematria: 10, type: 'Axiom', vector: 1 << 9 },
+            { letter: 'כ', name: 'Kaf', gematria: 20, type: 'Axiom', vector: 1 << 10 },
+            { letter: 'ל', name: 'Lamed', gematria: 30, type: 'Axiom', vector: 1 << 11 },
+            // --- 9 Compounds (Double Letters), k=2, using symmetrical axiom pairing ---
+            { letter: 'מ', name: 'Mem', gematria: 40, type: 'Compound', vector: (1 << 0) | (1 << 11) }, // Aleph(1) + Lamed(12)
+            { letter: 'נ', name: 'Nun', gematria: 50, type: 'Compound', vector: (1 << 1) | (1 << 10) }, // Bet(2) + Kaf(11)
+            { letter: 'ס', name: 'Samekh', gematria: 60, type: 'Compound', vector: (1 << 2) | (1 << 9) }, // Gimel(3) + Yod(10)
+            { letter: 'ע', name: 'Ayin', gematria: 70, type: 'Compound', vector: (1 << 3) | (1 << 8) }, // Dalet(4) + Tet(9)
+            { letter: 'פ', name: 'Pe', gematria: 80, type: 'Compound', vector: (1 << 4) | (1 << 7) }, // Heh(5) + Het(8)
+            { letter: 'צ', name: 'Tzadi', gematria: 90, type: 'Compound', vector: (1 << 5) | (1 << 6) }, // Vav(6) + Zayin(7)
+            { letter: 'ק', name: 'Qof', gematria: 100, type: 'Compound', vector: (1 << 0) | (1 << 5) }, // Aleph + Vav (Mothers)
+            { letter: 'ר', name: 'Resh', gematria: 200, type: 'Compound', vector: (1 << 4) | (1 << 9) }, // Heh + Yod
+            { letter: 'ש', name: 'Shin', gematria: 300, type: 'Compound', vector: (1 << 0) | (1 << 6) }, // Aleph + Zayin (Mothers)
+            // --- 1 Seal (Completion) ---
+            { letter: 'ת', name: 'Tav', gematria: 400, type: 'Seal of Creation', vector: 4095 }
         ];
 
-        // The first 12 letters are Axioms (k=1) and get a power-of-two vector.
-        const AXIOM_DEFINITIONS = letterDefinitions.slice(0, 12).map((def, i) => {
-            const axiom = { ...def, type: 'Axiom (Simple)', vector: 1 << i };
-            VECTOR_MAP[axiom.vector] = axiom;
-            GEMATRIA_MAP[axiom.gematria] = axiom;
-            return axiom;
-        });
-
-        // The next 9 letters are Compounds (k=2), derived from summing Gematria of Axioms.
-        const getVectorByGematriaSum = (targetGematria) => {
-            const lamed = GEMATRIA_MAP[30];
-            const kaf = GEMATRIA_MAP[20];
-            const yod = GEMATRIA_MAP[10];
-            switch(targetGematria) {
-                case 40: return lamed.vector | yod.vector; // 30 + 10 = 40 (Mem)
-                case 50: return lamed.vector | kaf.vector; // 30 + 20 = 50 (Nun)
-                case 60: return lamed.vector | kaf.vector | yod.vector; // 30 + 20 + 10 = 60 (Samekh) -> k=3
-                case 70: return GEMATRIA_MAP[7].vector | GEMATRIA_MAP[3].vector; // 7+3+.. no, simple pairing is better. Let's use systematic pairs for doubles.
+        // Populate the lookup maps from the single source of truth.
+        LETTER_DEFINITIONS.forEach(def => {
+            VECTOR_MAP[def.vector] = def;
+            if (def.type === 'Axiom') {
+                AXIOM_DEFINITIONS.push(def);
             }
-            return null; // fallback
-        };
-        
-        // Let's define the compounds systematically for clarity and consistency
-        const compounds = [
-            { def: letterDefinitions[12], v: GEMATRIA_MAP[30].vector | GEMATRIA_MAP[10].vector }, // Mem (40) = Lamed(30)+Yod(10)
-            { def: letterDefinitions[13], v: GEMATRIA_MAP[30].vector | GEMATRIA_MAP[20].vector }, // Nun (50) = Lamed(30)+Kaf(20)
-            { def: letterDefinitions[14], v: GEMATRIA_MAP[20].vector | GEMATRIA_MAP[10].vector | GEMATRIA_MAP[30].vector }, // Samekh (60)
-            { def: letterDefinitions[15], v: GEMATRIA_MAP[30].vector | GEMATRIA_MAP[20].vector | GEMATRIA_MAP[10].vector | GEMATRIA_MAP[9].vector},
-            { def: letterDefinitions[16], v: GEMATRIA_MAP[30].vector | GEMATRIA_MAP[20].vector | GEMATRIA_MAP[30].vector},
-            { def: letterDefinitions[17], v: (1 << 5) | (1 << 6) }, // Tzadi
-            { def: letterDefinitions[18], v: (1 << 0) | (1 << 6) }, // Qof
-            { def: letterDefinitions[19], v: (1 << 5) | (1 << 11) },// Resh
-            { def: letterDefinitions[20], v: (1 << 0) | (1 << 2) }  // Shin
-        ];
-
-        compounds.forEach(item => {
-            const compound = { ...item.def, type: 'Compound (Double)', vector: item.v };
-            VECTOR_MAP[compound.vector] = compound;
         });
 
-        VECTOR_MAP[4095] = { ...letterDefinitions[21], type: 'Fullness (Seal)', vector: 4095 };
-        
         const sliderInput = document.getElementById('voxelSelector');
         const numberInput = document.getElementById('voxelInput');
         const svgCanvas = document.getElementById('visualization');
-        const svgNamespace = "http://www.w.org/2000/svg";
+        const svgNamespace = "http://www.w3.org/2000/svg";
 
         sliderInput.addEventListener('input', e => {
             numberInput.value = e.target.value;
@@ -150,7 +131,9 @@
             const binRev = bin.split('').reverse();
             const cx = 250, cy = 170, r = 120;
 
-            svgCanvas.appendChild(createSVG('text', { x: cx, y: 30, 'text-anchor': 'middle', 'font-size': '18px', 'font-weight': 'bold', fill: '#333', textContent: "12 Foundational Axioms" }));
+            const title = createSVG('text', { x: cx, y: 30, 'text-anchor': 'middle', 'font-size': '18px', 'font-weight': 'bold', fill: '#333'});
+            title.textContent = "12 Foundational Axioms";
+            svgCanvas.appendChild(title);
 
             AXIOM_DEFINITIONS.forEach((axiom, i) => {
                 const angle = (i / 12) * 2 * Math.PI - (Math.PI / 2) + (Math.PI / 6);
@@ -186,6 +169,7 @@
             });
         }
         
+        // Initialize the system with Aleph (1) selected.
         updateSystemState(1);
     </script>
 
