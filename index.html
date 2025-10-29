@@ -14,8 +14,8 @@
                 <h2>Voxel State Analyzer</h2>
                 <div class="controls">
                     <label for="voxelInput">Select a state from 0 to 4095:</label>
-                    <input type="range" id="voxelSelector" class="slider" min="0" max="4095" value="4095">
-                    <input type="number" id="voxelInput" class="number-input" min="0" max="4095" value="4095">
+                    <input type="range" id="voxelSelector" class="slider" min="0" max="4095" value="1">
+                    <input type="number" id="voxelInput" class="number-input" min="0" max="4095" value="1">
                 </div>
                 <hr>
                 <table class="results-table">
@@ -23,7 +23,7 @@
                     <tr><td>Binary Vector (MSB > LSB):</td><td id="binaryVector"></td></tr>
                     <tr><td>Symmetry Complement:</td><td id="complementValue"></td></tr>
                     <tr><td>Hamming Weight (k):</td><td id="hammingWeight"></td></tr>
-                    <tr><td>Letter Match:</td><td id="letterMatch"></td></tr>
+                    <tr><td>Vector Type:</td><td id="letterMatch"></td></tr>
                     <tr><td>Contained Axioms:</td><td id="containedAxioms"></td></tr>
                 </table>
             </div>
@@ -38,34 +38,35 @@
         const STRUCTURAL_VECTOR_MAP = {};
 
         const AXIOM_DEFINITIONS = [
-            { letter: 'א', name: 'Aleph', gematria: 1, vector: 1 << 11 },
-            { letter: 'ב', name: 'Bet', gematria: 2, vector: 1 << 10 },
-            { letter: 'ג', name: 'Gimel', gematria: 3, vector: 1 << 9 },
-            { letter: 'ד', name: 'Dalet', gematria: 4, vector: 1 << 8 },
-            { letter: 'ה', name: 'He', gematria: 5, vector: 1 << 7 },
-            { letter: 'ו', name: 'Vav', gematria: 6, vector: 1 << 6 },
-            { letter: 'ז', name: 'Zayin', gematria: 7, vector: 1 << 5 },
-            { letter: 'ח', name: 'Het', gematria: 8, vector: 1 << 4 },
-            { letter: 'ט', name: 'Tet', gematria: 9, vector: 1 << 3 },
-            { letter: 'י', name: 'Yod', gematria: 10, vector: 1 << 2 },
-            { letter: 'כ', name: 'Kaf', gematria: 20, vector: 1 << 1 },
-            { letter: 'ל', name: 'Lamed', gematria: 30, vector: 1 << 0 }
+            { letter: 'א', name: 'Aleph', vector: 1 << 0 },   // 1 (LSB)
+            { letter: 'ב', name: 'Bet', vector: 1 << 1 },     // 2
+            { letter: 'ג', name: 'Gimel', vector: 1 << 2 },   // 4
+            { letter: 'ד', name: 'Dalet', vector: 1 << 3 },   // 8
+            { letter: 'ה', name: 'Heh', vector: 1 << 4 },     // 16
+            { letter: 'ו', name: 'Vav', vector: 1 << 5 },     // 32
+            { letter: 'ז', name: 'Zayin', vector: 1 << 6 },   // 64
+            { letter: 'ח', name: 'Het', vector: 1 << 7 },     // 128
+            { letter: 'ט', name: 'Tet', vector: 1 << 8 },     // 256
+            { letter: 'י', name: 'Yod', vector: 1 << 9 },     // 512
+            { letter: 'כ', name: 'Kaf', vector: 1 << 10 },    // 1024
+            { letter: 'ל', name: 'Lamed', vector: 1 << 11 }   // 2048 (MSB)
         ];
         AXIOM_DEFINITIONS.forEach(axiom => STRUCTURAL_VECTOR_MAP[axiom.vector] = { ...axiom, type: 'Axiom' });
 
         const COMPOUND_DEFINITIONS = [
-            { letter: 'מ', name: 'Mem', gematria: 40, vector: (1 << 11) | (1 << 0) },
-            { letter: 'נ', name: 'Nun', gematria: 50, vector: (1 << 10) | (1 << 1) },
-            { letter: 'ס', name: 'Samekh', gematria: 60, vector: (1 << 9) | (1 << 2) },
-            { letter: 'ע', name: 'Ayin', gematria: 70, vector: (1 << 8) | (1 << 3) },
-            { letter: 'פ', name: 'Pe', gematria: 80, vector: (1 << 7) | (1 << 4) },
-            { letter: 'צ', name: 'Tzadi', gematria: 90, vector: (1 << 6) | (1 << 5) },
-            { letter: 'ק', name: 'Qof', gematria: 100, vector: (1 << 11) | (1 << 6) },
-            { letter: 'ר', name: 'Resh', gematria: 200, vector: (1 << 10) | (1 << 5) },
-            { letter: 'ש', name: 'Shin', gematria: 300, vector: (1 << 9) | (1 << 4) },
-            { letter: 'ת', name: 'Tav', gematria: 400, vector: (1 << 8) | (1 << 3) }
+            { letter: 'מ', name: 'Mem', vector: (1 << 4) | (1 << 0) },   // Heh + Aleph
+            { letter: 'נ', name: 'Nun', vector: (1 << 5) | (1 << 1) },   // Vav + Bet
+            { letter: 'ס', name: 'Samekh', vector: (1 << 6) | (1 << 2) }, // Zayin + Gimel
+            { letter: 'ע', name: 'Ayin', vector: (1 << 7) | (1 << 3) },   // Het + Dalet
+            { letter: 'פ', name: 'Pe', vector: (1 << 8) | (1 << 4) },     // Tet + Heh
+            { letter: 'צ', name: 'Tzadi', vector: (1 << 9) | (1 << 5) },   // Yod + Vav
+            { letter: 'ק', name: 'Qof', vector: (1 << 10) | (1 << 6) },  // Kaf + Zayin
+            { letter: 'ר', name: 'Resh', vector: (1 << 11) | (1 << 7) },  // Lamed + Het
+            { letter: 'ש', name: 'Shin', vector: (1 << 0) | (1 << 1) }    // Aleph + Bet
         ];
         COMPOUND_DEFINITIONS.forEach(compound => STRUCTURAL_VECTOR_MAP[compound.vector] = { ...compound, type: 'Compound' });
+        
+        STRUCTURAL_VECTOR_MAP[4095] = { letter: 'ת', name: 'Tav', type: 'Fullness' };
         
         const sliderInput = document.getElementById('voxelSelector');
         const numberInput = document.getElementById('voxelInput');
@@ -90,25 +91,23 @@
         const getSymmetryComplement = (decimalValue) => 4095 - decimalValue;
         const getHammingWeight = (binaryString) => (binaryString.match(/1/g) || []).length;
 
-        function getLetterMatchType(decimalValue) {
+        function getVectorType(decimalValue) {
             const letterInfo = STRUCTURAL_VECTOR_MAP[decimalValue];
             if (letterInfo) {
                 return `${letterInfo.type}: ${letterInfo.name} (${letterInfo.letter})`;
             }
-            if (decimalValue === 0) return 'Null (Origin)';
-            if (decimalValue === 4095) return 'Universe (All Axioms)';
+            if (decimalValue === 0) return 'Void (Origin)';
             return 'Composite Vector';
         }
 
         function getContainedAxiomLetters(decimalValue) {
             if (decimalValue === 0) return '-';
             let axiomLetters = [];
-            for (let i = 0; i < 12; i++) {
-                const bitValue = 1 << i;
-                if ((decimalValue & bitValue) !== 0) {
-                    axiomLetters.push(STRUCTURAL_VECTOR_MAP[bitValue].letter);
+            AXIOM_DEFINITIONS.forEach(axiom => {
+                if ((decimalValue & axiom.vector) !== 0) {
+                    axiomLetters.push(axiom.letter);
                 }
-            }
+            });
             return axiomLetters.join(', ');
         }
 
@@ -119,7 +118,7 @@
             document.getElementById('binaryVector').textContent = binaryString.replace(/(.{4})/g, '$1 ').trim();
             document.getElementById('complementValue').textContent = getSymmetryComplement(currentValue);
             document.getElementById('hammingWeight').textContent = getHammingWeight(binaryString);
-            document.getElementById('letterMatch').textContent = getLetterMatchType(currentValue);
+            document.getElementById('letterMatch').textContent = getVectorType(currentValue);
             document.getElementById('containedAxioms').textContent = getContainedAxiomLetters(currentValue);
             
             drawVisualization(binaryString);
@@ -140,7 +139,7 @@
         }
 
         function drawAxiomNodes(binaryString) {
-            const binaryDigitsArray = binaryString.split('');
+            const binaryDigitsArray = binaryString.split('').reverse(); // Reverse for LSB at index 0
             const centerX = 250, centerY = 170, radius = 120;
 
             const title = createSVGElement('text', {
@@ -150,7 +149,7 @@
             svgCanvas.appendChild(title);
 
             for (let i = 0; i < 12; i++) {
-                const angle = (i / 12) * 2 * Math.PI - (Math.PI / 2); 
+                const angle = (i / 12) * 2 * Math.PI - (Math.PI / 2); // i=0 (Aleph) is at the top
                 const x = centerX + radius * Math.cos(angle);
                 const y = centerY + radius * Math.sin(angle);
                 
@@ -176,14 +175,14 @@
         }
 
         function drawTernaryBars(binaryString) {
-             const zAxisBits = binaryString.substring(0, 4);
-             const yAxisBits = binaryString.substring(4, 8);
-             const xAxisBits = binaryString.substring(8, 12);
+             const zAxisBits = binaryString.substring(0, 4);   // Bits 9-12 (MSB)
+             const yAxisBits = binaryString.substring(4, 8);   // Bits 5-8
+             const xAxisBits = binaryString.substring(8, 12);  // Bits 1-4 (LSB)
              
              const ternaryAxesData = [
                 { label: 'X: Potential (א)', value: parseInt(xAxisBits, 2), color: '#d9534f' },
                 { label: 'Y: Formation (מ)', value: parseInt(yAxisBits, 2), color: '#5bc0de' },
-                { label: 'Z: Transformation (ש)', value: parseInt(zAxisBits, 2), color: '#5cb85c' }
+                { label: 'Z: Transform (ש)', value: parseInt(zAxisBits, 2), color: '#5cb85c' }
             ];
             const barWidth = 200, barHeight = 22, startX = 150, startY = 380, spacing = 40;
 
